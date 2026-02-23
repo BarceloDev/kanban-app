@@ -1,0 +1,6 @@
+@import "tailwindcss";
+
+.line {
+  width: 100%;
+  height: 3px;
+}
