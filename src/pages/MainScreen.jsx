@@ -1,14 +1,20 @@
 import { useState } from "react";
 import Header from "../components/Header";
-import Pictures from "../components/Pictures";
+import OptionScreen from "../components/OptionScreen";
 
 export default function UserScreen() {
-  const [option, setOption] = useState("pictures");
+  const [navBarOpen, setNavBarOpen] = useState(false);
+  const [profileNavBarOpen, setProfileNavBarOpen] = useState(false);
 
   return (
     <div>
-      <Header setOption={setOption} />
-      {option === "pictures" ? <Pictures /> : ""}
+      <Header
+        navBarOpen={navBarOpen}
+        setNavBarOpen={setNavBarOpen}
+        profileNavBarOpen={profileNavBarOpen}
+        setProfileNavBarOpen={setProfileNavBarOpen}
+      />
+      <OptionScreen navBarOpen={navBarOpen} />
     </div>
   );
 }
