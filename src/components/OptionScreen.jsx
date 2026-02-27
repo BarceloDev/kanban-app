@@ -3,6 +3,7 @@ import axios from "axios";
 import PopUp from "./PopUp";
 import NavBar from "./NavBar";
 import Pictures from "./Pictures";
+import Dashboards from "./Dashboards";
 
 export default function OptionScreen({ navBarOpen }) {
   const [popUpOpen, setPopUpOpen] = useState(false);
@@ -45,7 +46,7 @@ export default function OptionScreen({ navBarOpen }) {
       {/* Overlay para escurecer o fundo quando o popup abrir */}
       {popUpOpen && (
         <div
-          className="fixed inset-0 bg-gray-400 opacity-75 z-40"
+          className="fixed inset-0 bg-black/40 z-40"
           onClick={() => setPopUpOpen(false)}
         />
       )}
