@@ -1,5 +1,5 @@
 import { useState } from "react";
-import Header from "../components/Header";
+import Header from "../components/Fixeds/Header";
 import OptionScreen from "../components/OptionScreen";
 
 export default function UserScreen() {

@@ -49,7 +49,7 @@ export default function PopUp({ setPopUpOpen, setPictures }) {
   }
 
   return (
-    <div className="fixed inset-0 bg-black opacity-50 flex justify-center items-center z-50">
+    <div className="fixed inset-0 bg-black/50 flex justify-center items-center z-50">
       <form
         onSubmit={handleSubmit}
         className="w-80 p-6 rounded-md bg-white flex flex-col gap-4 shadow-xl"
