@@ -1,12 +1,38 @@
 import { Link } from "react-router-dom";
+import axios from "axios";
 
 export default function Pictures({
   pictures,
+  setPictures,
   setPopUpOpen,
   setPopUpEditOpen,
   setPopUpDeleteOpen,
   setSelectedPicture,
 }) {
+  function togglePin(picture) {
+    axios
+      .patch(
+        `http://localhost:8000/api/pictures/${picture.id}/pin`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        },
+      )
+      .then((res) => {
+        setPictures((prev) => {
+          const updated = prev.map((p) => (p.id === picture.id ? res.data : p));
+
+          return [...updated].sort((a, b) => {
+            if (a.pinned === b.pinned) return 0;
+            return a.pinned ? -1 : 1;
+          });
+        });
+      })
+      .catch((err) => console.error(err));
+  }
+
   return (
     <div className="w-full p-6">
       <div className="w-full flex justify-between items-center">
@@ -30,10 +56,11 @@ export default function Pictures({
               key={picture.id}
               className="border p-4 rounded-lg shadow-sm bg-white flex justify-between"
             >
-              <Link key={picture.id} to={`/picture/${picture.id}`}>
+              <Link to={`/picture/${picture.id}`}>
                 <div>
                   <h2 className="font-bold text-lg">{picture.title}</h2>
                   <p className="text-gray-600 mt-1">{picture.description}</p>
+
                   {picture.deadline && (
                     <p className="text-xs text-red-500 mt-2">
                       Deadline:{" "}
@@ -42,6 +69,7 @@ export default function Pictures({
                   )}
                 </div>
               </Link>
+
               <div className="flex flex-col-reverse gap-8">
                 <button
                   onClick={() => {
@@ -49,18 +77,22 @@ export default function Pictures({
                     setPopUpEditOpen(true);
                   }}
                 >
-                  <i className="bi bi-pencil-square p-2 bg-green-400 rounded-md text-white transition duration-200 ease-in-out hover:bg-green-700"></i>
+                  <i className="bi bi-pencil-square p-2 bg-green-400 rounded-md text-white hover:bg-green-700 transition duration-200 ease-in-out"></i>
                 </button>
+
                 <button
                   onClick={() => {
                     setSelectedPicture(picture);
                     setPopUpDeleteOpen(true);
                   }}
                 >
-                  <i className="bi bi-trash p-2 bg-red-400 rounded-md text-white transition duration-200 ease-in-out hover:bg-red-700"></i>
+                  <i className="bi bi-trash p-2 bg-red-400 rounded-md text-white hover:bg-red-700 transition duration-200 ease-in-out"></i>
                 </button>
-                <button>
-                  <i className={`bi bi-pin`}></i>
+
+                <button onClick={() => togglePin(picture)}>
+                  <i
+                    className={`bi ${picture.pinned ? "bi-pin-angle-fill" : "bi-pin-angle"}`}
+                  ></i>
                 </button>
               </div>
             </div>

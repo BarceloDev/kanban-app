@@ -73,10 +73,11 @@ export default function OptionScreen({ navBarOpen }) {
         {option === "pictures" && (
           <Pictures
             pictures={pictures}
+            setPictures={setPictures}
             setPopUpOpen={setPopUpOpen}
             setPopUpEditOpen={setPopUpEditOpen}
-            setSelectedPicture={setSelectedPicture}
             setPopUpDeleteOpen={setPopUpDeleteOpen}
+            setSelectedPicture={setSelectedPicture}
           />
         )}
       </main>

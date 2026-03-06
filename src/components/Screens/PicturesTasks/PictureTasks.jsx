@@ -17,6 +17,43 @@ export default function PictureTasks() {
   const [popUpTaskDeleteOpen, setPopUpTaskDeleteOpen] = useState(false);
   const [status, setStatus] = useState("");
 
+  function moveTask(task, direction) {
+    const order = ["todo", "doing", "done"];
+
+    const currentIndex = order.indexOf(task.status);
+
+    let newIndex;
+
+    if (direction === "forward") {
+      newIndex = currentIndex + 1;
+    } else {
+      newIndex = currentIndex - 1;
+    }
+
+    if (newIndex < 0 || newIndex >= order.length) return;
+
+    const newStatus = order[newIndex];
+
+    axios
+      .put(
+        `http://localhost:8000/api/tasks/${task.id}`,
+        {
+          title: task.title,
+          description: task.description,
+          status: newStatus,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        },
+      )
+      .then((res) => {
+        setTasks((prev) => prev.map((t) => (t.id === task.id ? res.data : t)));
+      })
+      .catch((err) => console.error(err));
+  }
+
   useEffect(() => {
     axios
       .get(`http://localhost:8000/api/pictures/${id}`, {
@@ -35,7 +72,7 @@ export default function PictureTasks() {
 
   return (
     <div
-      className={`p-6 h-screen w-screen flex flex-col gap-8 transition duration-200 ease-in-out ${
+      className={`p-6 min-h-screen w-full flex flex-col gap-8 transition duration-200 ease-in-out ${
         theme === "escuro" ? "bg-blue-950" : "bg-white"
       }`}
     >
@@ -73,11 +110,12 @@ export default function PictureTasks() {
       <header className="w-full border p-4 rounded-lg shadow-sm bg-white flex justify-between">
         <div className="flex gap-6">
           <Link to={"/main"}>
-            <i className="bi bi-arrow-left bg-blue-500 text-white py-1 px-2 rounded-md"></i>
+            <i className="bi bi-arrow-left bg-blue-500 text-white py-1 px-2 rounded-md hover:bg-blue-700 transition duration-200 ease-in-out"></i>
           </Link>
-          <div>
-            <h1 className="font-bold text-xl">{picture.title}</h1>
-            <p>{picture.description}</p>
+
+          <div className="min-w-0">
+            <h1 className="font-bold text-xl break-all">{picture.title}</h1>
+            <p className="break-all">{picture.description}</p>
           </div>
         </div>
 
@@ -87,6 +125,7 @@ export default function PictureTasks() {
               className={`bi ${theme === "claro" ? "bi-sun-fill" : "bi-sun"}`}
             ></i>
           </button>
+
           <button onClick={() => setTheme("escuro")}>
             <i
               className={`bi ${theme === "escuro" ? "bi-moon-fill" : "bi-moon"}`}
@@ -95,7 +134,7 @@ export default function PictureTasks() {
         </div>
       </header>
 
-      <div className="w-full flex gap-6">
+      <div className="w-full flex gap-6 flex-col md:flex-row">
         <KanbanColumn
           title="To do"
           columnStatus="todo"
@@ -105,6 +144,7 @@ export default function PictureTasks() {
           setSelectedTask={setSelectedTask}
           openEdit={setPopUpTaskEditOpen}
           openDelete={setPopUpTaskDeleteOpen}
+          moveTask={moveTask}
         />
 
         <KanbanColumn
@@ -116,6 +156,7 @@ export default function PictureTasks() {
           setSelectedTask={setSelectedTask}
           openEdit={setPopUpTaskEditOpen}
           openDelete={setPopUpTaskDeleteOpen}
+          moveTask={moveTask}
         />
 
         <KanbanColumn
@@ -127,6 +168,7 @@ export default function PictureTasks() {
           setSelectedTask={setSelectedTask}
           openEdit={setPopUpTaskEditOpen}
           openDelete={setPopUpTaskDeleteOpen}
+          moveTask={moveTask}
         />
       </div>
     </div>
@@ -142,18 +184,20 @@ function KanbanColumn({
   setSelectedTask,
   openEdit,
   openDelete,
+  moveTask,
 }) {
   return (
-    <div className="flex-1 bg-slate-200 rounded-md p-4 flex flex-col gap-4">
-      <div className="flex justify-between items-center">
+    <div className="flex-1 bg-slate-200 rounded-md p-4 flex flex-col gap-4 text-xs md:text-base">
+      <div className="flex justify-between items-center gap-4">
         <h2 className="font-bold">{title}</h2>
+
         <button
           onClick={() => {
             setStatus(columnStatus);
             openPopup(true);
           }}
         >
-          <i className="bi bi-plus-lg py-1 px-2 bg-blue-500 rounded-md text-white"></i>
+          <i className="bi bi-plus-lg py-1 px-2 bg-blue-500 rounded-md text-white hover:bg-blue-700 transition duration-200 ease-in-out"></i>
         </button>
       </div>
 
@@ -162,20 +206,24 @@ function KanbanColumn({
         .map((task) => (
           <div
             key={task.id}
-            className="bg-white p-3 rounded shadow flex justify-between"
+            className="bg-white p-3 rounded shadow flex gap-3 items-start"
           >
-            <div>
-              <h3 className="font-semibold">{task.title}</h3>
-              <p className="text-sm text-gray-600">{task.description}</p>
+            <div className="flex-1 min-w-0 flex flex-col">
+              <h3 className="font-semibold break-all">{task.title}</h3>
+
+              <p className="text-sm text-gray-600 break-all">
+                {task.description}
+              </p>
             </div>
-            <div className="flex flex-col gap-6">
+
+            <div className="flex flex-col gap-6 items-end">
               <button
                 onClick={() => {
                   setSelectedTask(task);
                   openEdit(true);
                 }}
               >
-                <i className="bi bi-pencil-square p-2 bg-green-400 rounded-md text-white hover:bg-green-700"></i>
+                <i className="bi bi-pencil-square p-2 bg-green-400 rounded-md text-white hover:bg-green-700 transition duration-200 ease-in-out"></i>
               </button>
 
               <button
@@ -184,8 +232,24 @@ function KanbanColumn({
                   openDelete(true);
                 }}
               >
-                <i className="bi bi-trash p-2 bg-red-400 rounded-md text-white hover:bg-red-700"></i>
+                <i className="bi bi-trash p-2 bg-red-400 rounded-md text-white hover:bg-red-700 transition duration-200 ease-in-out"></i>
               </button>
+
+              <div className="flex gap-2">
+                <button
+                  className="px-1 bg-blue-500 rounded-full hover:bg-blue-700 text-white transition duration-200 ease-in-out"
+                  onClick={() => moveTask(task, "back")}
+                >
+                  <i className="bi bi-arrow-left-short"></i>
+                </button>
+
+                <button
+                  className="px-1 bg-blue-500 rounded-full hover:bg-blue-700 text-white transition duration-200 ease-in-out"
+                  onClick={() => moveTask(task, "forward")}
+                >
+                  <i className="bi bi-arrow-right-short"></i>
+                </button>
+              </div>
             </div>
           </div>
         ))}
