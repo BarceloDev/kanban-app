@@ -1,6 +1,6 @@
 export default function NavBar({ option, setOption }) {
   return (
-    <nav className="p-2 w-50 h-full flex flex-col gap-4 bg-slate-100">
+    <nav className="p-2 w-40 absolute md:static md:w-50 h-full flex flex-col gap-4 bg-slate-100">
       <div className="flex flex-col gap-4">
         <h3 className="text-xl font-bold">PROJECTS</h3>
         <ul className="px-4 flex flex-col gap-4">
@@ -23,17 +23,9 @@ export default function NavBar({ option, setOption }) {
           <li>
             <button onClick={() => setOption("assigned")}>
               <i
-                class={`bi ${option === "assigned" ? "bi-geo-fill" : "bi-geo"}`}
+                className={`bi ${option === "assigned" ? "bi-geo-fill" : "bi-geo"}`}
               ></i>
               Assigned
-            </button>
-          </li>
-          <li>
-            <button onClick={() => setOption("deadlines")}>
-              <i
-                className={`bi ${option === "deadlines" ? "bi-alarm-fill" : "bi-alarm"}`}
-              ></i>
-              Deadlines
             </button>
           </li>
           <li>
@@ -54,11 +46,11 @@ export default function NavBar({ option, setOption }) {
             </button>
           </li>
           <li>
-            <button onClick={() => setOption("inbox")}>
+            <button onClick={() => setOption("mail")}>
               <i
-                className={`bi ${option === "inbox" ? "bi-box-fill" : "bi-box"}`}
+                className={`bi ${option === "mail" ? "bi-box-fill" : "bi-box"}`}
               ></i>
-              Inbox
+              Mail
             </button>
           </li>
         </ul>

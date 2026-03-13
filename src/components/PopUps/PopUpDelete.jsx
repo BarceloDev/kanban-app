@@ -24,7 +24,7 @@ export default function PopUpDelete({
 
   return (
     <div className="fixed inset-0 bg-black/50 flex justify-center items-center z-50">
-      <div className="w-80 p-6 rounded-md bg-white flex flex-col gap-4 shadow-xl">
+      <div className="w-60 md:w-80 p-6 rounded-md bg-white flex flex-col gap-4 shadow-xl">
         <h2 className="text-lg font-bold">
           Are you sure you want to delete this picture?
         </h2>

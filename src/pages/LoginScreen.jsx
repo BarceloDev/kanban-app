@@ -42,8 +42,8 @@ export default function LoginScreen() {
   }
 
   return (
-    <div className="w-screen h-screen flex justify-center items-center bg-blue-600 text-black md:gap-5">
-      <div className="w-300 ml-5 p-6 bg-slate-50 rounded-md flex flex-col gap-5">
+    <div className="w-full h-screen gap-10 flex justify-center items-center bg-blue-600 text-black">
+      <div className="w-full md:ml-10 md:w-300 p-6 bg-slate-50 md:rounded-md flex flex-col gap-5">
         <span>
           <h5 className="text-xl font-bold">Welcome to</h5>
           <h1 className="text-3xl font-bold">KANBAN APP</h1>
