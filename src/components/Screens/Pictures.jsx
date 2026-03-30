@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { useState } from "react";
 import axios from "axios";
 
 export default function Pictures({
@@ -9,6 +10,8 @@ export default function Pictures({
   setPopUpDeleteOpen,
   setSelectedPicture,
 }) {
+  const [completed, setCompleted] = useState(false);
+
   function togglePin(picture) {
     axios
       .patch(
@@ -31,6 +34,32 @@ export default function Pictures({
         });
       })
       .catch((err) => console.error(err));
+  }
+
+  function toggleComplete(picture) {
+    axios
+      .patch(
+        `http://localhost:8000/api/pictures/${picture.id}/conclude`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        },
+      )
+      .then((res) => {
+        setPictures((prev) => {
+          const updated = prev.map((p) => (p.id === picture.id ? res.data : p));
+
+          return [...updated].sort((a, b) => {
+            if (a.pinned === b.pinned) return 0;
+            return a.pinned ? -1 : 1;
+          });
+        });
+      })
+      .catch((err) => console.error(err));
+
+    setCompleted((prev) => !prev);
   }
 
   return (
@@ -92,6 +121,16 @@ export default function Pictures({
                 <button onClick={() => togglePin(picture)}>
                   <i
                     className={`bi ${picture.pinned ? "bi-pin-angle-fill" : "bi-pin-angle"}`}
+                  ></i>
+                </button>
+
+                <button
+                  onClick={() => {
+                    toggleComplete(picture);
+                  }}
+                >
+                  <i
+                    className={`bi ${completed ? "bi-check-square-fill" : "bi-check-square"}`}
                   ></i>
                 </button>
               </div>
